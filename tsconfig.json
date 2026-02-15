@@ -1,0 +1,3 @@
+{
+  "extends": "@norrjord-intel/config/tsconfig.base.json"
+}

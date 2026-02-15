@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "scheme": "norrjord-intel",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "norrjord-intel",
+    "slug": "norrjord-intel",
+    "plugins": ["expo-font"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

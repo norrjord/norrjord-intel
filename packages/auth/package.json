@@ -1,0 +1,25 @@
+{
+  "name": "@norrjord-intel/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@better-auth/expo": "catalog:",
+    "@norrjord-intel/db": "workspace:*",
+    "@norrjord-intel/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@norrjord-intel/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
