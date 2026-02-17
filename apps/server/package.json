@@ -7,11 +7,13 @@
     "check-types": "tsc -b",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "bun run --hot src/index.ts",
+    "discover": "bun src/jobs/discover.ts",
     "start": "bun run dist/index.mjs"
   },
   "dependencies": {
     "@ai-sdk/devtools": "^0.0.2",
     "@ai-sdk/google": "^3.0.1",
+    "@anthropic-ai/sdk": "^0.74.0",
     "@norrjord-intel/api": "workspace:*",
     "@norrjord-intel/auth": "workspace:*",
     "@norrjord-intel/db": "workspace:*",
@@ -21,6 +23,7 @@
     "@orpc/zod": "catalog:",
     "ai": "catalog:",
     "better-auth": "catalog:",
+    "cheerio": "^1.2.0",
     "dotenv": "catalog:",
     "hono": "catalog:",
     "zod": "catalog:"
