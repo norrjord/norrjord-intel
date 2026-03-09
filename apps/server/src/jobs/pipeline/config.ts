@@ -15,7 +15,7 @@ export const PIPELINE_CONFIG = {
   // Fetching
   maxPagesToFetchPerDomain: 3,
   maxTotalFetchesPerRun: 300,
-  fetchDelayMs: 2_000,
+  fetchDelayMs: 500,
   fetchTimeoutMs: 10_000,
 
   // Text limits (token cost control)
@@ -28,9 +28,9 @@ export const PIPELINE_CONFIG = {
   draftModel: "claude-sonnet-4-5-20250929",
 
   // Thresholds
-  classifyConfidenceThreshold: 0.5, // minimum to proceed to deep analysis
-  minPilotScoreToStore: 4, // store entities with at least this pilot score
-  minInvestorScoreToStore: 4, // or this investor score
+  classifyConfidenceThreshold: 0.6, // minimum to proceed to deep analysis
+  minPilotScoreToStore: 7, // store entities with at least this pilot score
+  minInvestorScoreToStore: 6, // or this investor score
 
   // Stop conditions
   maxEntitiesToCreatePerRun: 50,

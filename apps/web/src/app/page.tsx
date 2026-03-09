@@ -1,46 +1,72 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
 
-import { orpc } from "@/utils/orpc";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
+import { authClient } from "@/lib/auth-client";
+import SignInForm from "@/components/sign-in-form";
+import SignUpForm from "@/components/sign-up-form";
 
 export default function Home() {
-  const healthCheck = useQuery(orpc.healthCheck.queryOptions());
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+  const [showSignIn, setShowSignIn] = useState(true);
+
+  useEffect(() => {
+    if (session?.user) {
+      router.replace("/crm/dashboard");
+    }
+  }, [session, router]);
+
+  if (isPending) {
+    return (
+      <div className="flex h-svh items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (session?.user) {
+    return null;
+  }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
-            <span className="text-sm text-muted-foreground">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
-            </span>
+    <div className="flex h-svh">
+      {/* Left side — branding */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-foreground p-12">
+        <div>
+          <span className="text-2xl font-semibold tracking-tight text-background">
+            Norrjord
+          </span>
+          <span className="ml-2 text-sm text-background/60">CRM</span>
+        </div>
+        <div className="space-y-4">
+          <p className="text-3xl font-semibold leading-tight text-background">
+            Discover and onboard<br />Swedish meat producers.
+          </p>
+          <p className="text-sm text-background/60 max-w-md">
+            AI-powered discovery pipeline, CRM pipeline management, and seamless integration with the Norrjord marketplace platform.
+          </p>
+        </div>
+        <p className="text-xs text-background/40">
+          Internal tool — Norrjord team only
+        </p>
+      </div>
+
+      {/* Right side — auth form */}
+      <div className="flex flex-1 items-center justify-center p-6">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 lg:hidden">
+            <span className="text-2xl font-semibold tracking-tight">Norrjord</span>
+            <span className="ml-2 text-sm text-muted-foreground">CRM</span>
           </div>
-        </section>
+
+          {showSignIn ? (
+            <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
+          ) : (
+            <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
+          )}
+        </div>
       </div>
     </div>
   );

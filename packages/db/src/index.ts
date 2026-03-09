@@ -4,7 +4,9 @@ import { drizzle } from "drizzle-orm/neon-http";
 
 import * as schema from "./schema";
 
-const sql = neon(env.DATABASE_URL);
-export const db = drizzle(sql, { schema });
+const neonClient = neon(env.DATABASE_URL);
+export const db = drizzle(neonClient, { schema });
 
-export { eq, and, or, desc } from "drizzle-orm";
+export { eq, and, or, desc, asc, ilike, sql, count, isNotNull, inArray } from "drizzle-orm";
+export { SWEDISH_COUNTIES } from "./swedish-regions";
+export type { SwedishCountySlug } from "./swedish-regions";

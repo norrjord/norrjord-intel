@@ -14,15 +14,20 @@ import type { ClassifiedCandidate } from "./classify";
 
 const ANALYZE_SYSTEM_PROMPT = `You are a Swedish agricultural market analyst. You ONLY output valid JSON. Never hallucinate facts — if information is not in the text, use null or "unknown". Every claim must be grounded in the provided text.
 
-You are analyzing a potential partner/pilot candidate for Norrjord, a demand-driven direct sales infrastructure platform for Swedish meat producers.
+You are analyzing a potential partner/pilot candidate for Norrjord, a demand-driven direct sales infrastructure platform for Swedish meat producers. Norrjord is a NATIONAL service — it is NOT limited to Norrland or any specific region. The pilot starts in Härnösand but will expand across all of Sweden. Do not apply any geographic bias in scoring.
+
+Relevant entity types:
+- Producers: farms that raise and sell meat (beef, lamb, pork, game, poultry)
+- Partners: slaughterhouses, butcheries, meat processors, logistics providers that serve producers
+- Investors: large-scale operations, agricultural groups, or individuals with capital + industry knowledge
 
 SCORING RUBRICS:
 
 pilot_fit (0–10):
 - Direct sales signals (REKO, gårdsbutik, köttlåda, direktförsäljning, boxes): 0–4 points
-- Primary meat producer focus (not restaurant/marketplace): 0–2 points
+- Primary meat producer or meat processing focus (not restaurant/marketplace): 0–2 points
 - Professional readiness (clear products, ordering info, contact details): 0–2 points
-- Region alignment (Norrland/High Coast = bonus): 0–2 points
+- Existing customer base or delivery capability: 0–2 points
 
 investor_fit (0–10):
 - Scale signals (volume, multiple product lines, expansion, facilities): 0–4 points

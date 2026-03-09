@@ -7,7 +7,7 @@ import { aiAnalysis } from "./ai-analysis";
 import { relationshipStatus } from "./relationship-status";
 import { interaction } from "./interaction";
 import { draft } from "./draft";
-
+import { outreachCampaign, outreachSend, emailTemplate } from "./outreach";
 // ─── Entity relations ───────────────────────────────────
 
 export const entityRelations = relations(entity, ({ many }) => ({
@@ -17,6 +17,7 @@ export const entityRelations = relations(entity, ({ many }) => ({
   relationships: many(relationshipStatus),
   interactions: many(interaction),
   drafts: many(draft),
+  outreachSends: many(outreachSend),
 }));
 
 // ─── Entity source relations ────────────────────────────
@@ -72,6 +73,31 @@ export const interactionRelations = relations(interaction, ({ one }) => ({
 export const draftRelations = relations(draft, ({ one }) => ({
   entity: one(entity, {
     fields: [draft.entityId],
+    references: [entity.id],
+  }),
+}));
+
+// ─── Outreach relations ─────────────────────────────────
+
+export const emailTemplateRelations = relations(emailTemplate, ({ many }) => ({
+  campaigns: many(outreachCampaign),
+}));
+
+export const outreachCampaignRelations = relations(outreachCampaign, ({ one, many }) => ({
+  template: one(emailTemplate, {
+    fields: [outreachCampaign.templateId],
+    references: [emailTemplate.id],
+  }),
+  sends: many(outreachSend),
+}));
+
+export const outreachSendRelations = relations(outreachSend, ({ one }) => ({
+  campaign: one(outreachCampaign, {
+    fields: [outreachSend.campaignId],
+    references: [outreachCampaign.id],
+  }),
+  entity: one(entity, {
+    fields: [outreachSend.entityId],
     references: [entity.id],
   }),
 }));

@@ -23,6 +23,8 @@ export const productionTypeEnum = pgEnum("production_type", [
 
 export const sourceTypeEnum = pgEnum("source_type", [
   "search_api",
+  "reko_scrape",
+  "instagram_scrape",
   "manual",
   "referral",
 ]);
@@ -52,6 +54,14 @@ export const pipelineStageEnum = pgEnum("pipeline_stage", [
   "negotiating",
   "closed_won",
   "closed_lost",
+]);
+
+// ─── Registration path ────────────────────────────────
+
+export const registrationPathEnum = pgEnum("registration_path", [
+  "intel_outreach",
+  "organic",
+  "unknown",
 ]);
 
 // ─── Interactions ───────────────────────────────────────

@@ -45,19 +45,19 @@ export interface RekoParseResult {
 
 // ─── System prompt ──────────────────────────────────────
 
-const REKO_PARSE_SYSTEM_PROMPT = `You are parsing copy-pasted text from a Swedish REKO ring Facebook group. The text contains multiple producer posts mixed together.
+const REKO_PARSE_SYSTEM_PROMPT = `You are parsing copy-pasted text that may come from various Swedish sources: REKO ring Facebook groups, Instagram posts/bios, Facebook pages, forum posts, directory listings, or any other text mentioning food producers.
 
-Your task: identify every distinct producer and extract structured data about them.
+Your task: identify every distinct producer or food business and extract structured data about them.
 
 IMPORTANT RULES:
-- Each producer typically posts once per delivery listing
-- Posts usually contain: producer/farm name, what they sell, price hints, pickup info
+- The text may contain one or many producers — extract all you can find
+- Look for: business names, farm names, what they produce/sell, contact info, websites, locations
 - Some producers are meat producers (your PRIMARY target), others sell eggs, vegetables, bread, etc.
 - Mark is_meat_producer: true for anyone selling beef, pork, lamb, game meat, poultry, charcuterie, sausages, or similar
 - Mark is_meat_producer: false for vegetable growers, bakers, egg producers, etc.
-- Extract contact info ONLY if explicitly posted (email, phone, website)
+- Extract contact info ONLY if explicitly present (email, phone, website, Instagram handle as website)
 - Never fabricate information — if unclear, use null
-- The same producer may appear multiple times in the feed — deduplicate by name
+- The same producer may appear multiple times — deduplicate by name
 - confidence: 0.0-1.0 on how certain you are this is a real distinct producer
 
 Return ONLY this JSON:
@@ -93,9 +93,9 @@ export async function parseRekoFeed(
   // Cap input text (REKO feeds can be very long)
   const cappedText = feedText.length > 30_000 ? feedText.slice(0, 30_000) : feedText;
 
-  const userPrompt = `REKO group region: ${regionHint}
+  const userPrompt = `Region hint: ${regionHint}
 
-Pasted feed text (${cappedText.length} chars):
+Pasted text (${cappedText.length} chars):
 
 ${cappedText}`;
 
@@ -123,6 +123,7 @@ export async function importRekoProducers(
   parsed: RekoParseResult,
   regionHint: string,
   rekoGroupName: string,
+  sourceType: "manual" | "reko_scrape" = "manual",
 ): Promise<RekoImportResult> {
   const result: RekoImportResult = {
     created: 0,
@@ -193,7 +194,7 @@ export async function importRekoProducers(
 
     await db.insert(entitySource).values({
       entityId,
-      sourceType: "manual",
+      sourceType: sourceType,
       sourceQuery: `REKO: ${rekoGroupName}`,
       sourceUrl: null,
     });

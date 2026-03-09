@@ -14,12 +14,12 @@ import type { FetchedCandidate } from "./fetch-site";
 
 const CLASSIFY_SYSTEM_PROMPT = `You are a Swedish agricultural business classifier. You ONLY output valid JSON. No prose, no markdown, no explanation outside JSON.
 
-Your task: determine if the following website content belongs to a Swedish primary meat producer, strategic partner (slaughterhouse, logistics, butcher), or potential investor (large-scale farm, agricultural business group).
+Your task: determine if the following website content belongs to a Swedish primary meat producer, strategic partner (slaughterhouse, butchery, meat processor, logistics), or potential investor (large-scale farm, agricultural business group).
 
 Scoring context:
-- We are building Norrjord, a demand-driven direct sales platform for Swedish meat producers.
+- Norrjord is a national demand-driven direct sales platform for Swedish meat producers. It is NOT limited to any specific region.
 - We want producers who already show direct sales activity (REKO, gårdsbutik, köttlåda) or have scale that suggests they'd benefit from our system.
-- Partners include slaughterhouses, butchers, and logistics providers who serve producers.
+- Partners include slaughterhouses, butcheries, meat processors, and logistics providers who serve producers. These are highly valuable.
 - Investors are large-scale operations, agricultural groups, or individuals with capital + industry knowledge.
 
 Return ONLY this JSON structure:

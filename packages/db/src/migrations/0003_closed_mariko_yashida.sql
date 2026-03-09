@@ -1,0 +1,1 @@
+ALTER TABLE "discovery_run" ADD COLUMN "pid" integer;

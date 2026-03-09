@@ -16,6 +16,8 @@ export * from "./relationship-status";
 export * from "./interaction";
 export * from "./draft";
 export * from "./discovery-run";
+export * from "./discovery-config";
+export * from "./outreach";
 
 // ─── Intel: Relations ───────────────────────────────────
 export * from "./relations";

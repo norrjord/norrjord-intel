@@ -8,6 +8,9 @@
     "./schema": {
       "default": "./src/schema/index.ts"
     },
+    "./swedish-regions": {
+      "default": "./src/swedish-regions.ts"
+    },
     "./*": {
       "default": "./src/*.ts"
     }

@@ -9,14 +9,13 @@
  * - Ensures relationship_status exists for inferred pipeline
  */
 
-import { eq, and } from "@norrjord-intel/db";
+import { eq, and, sql } from "@norrjord-intel/db";
 import { db } from "@norrjord-intel/db";
 import {
   entity,
   entitySource,
   contact,
   aiAnalysis,
-  relationshipStatus,
 } from "@norrjord-intel/db/schema";
 import { PIPELINE_CONFIG, type RunStats } from "./config";
 import type { AnalyzedCandidate } from "./analyze";
@@ -123,47 +122,8 @@ async function upsertOne(candidate: AnalyzedCandidate, stats: RunStats): Promise
     rawOutputJson: analysis as any,
   });
 
-  // ─── 5. Ensure relationship_status exists ───────────
-
-  // Determine which pipelines to create
-  const pipelines: Array<"pilot" | "partner" | "investor"> = [];
-
-  if (entityType === "producer" || analysis.scores.pilot_fit >= 4) {
-    pipelines.push("pilot");
-  }
-  if (entityType === "partner") {
-    pipelines.push("partner");
-  }
-  if (entityType === "investor" || analysis.scores.investor_fit >= 6) {
-    pipelines.push("investor");
-  }
-  // If nothing matched, default to pilot
-  if (pipelines.length === 0) {
-    pipelines.push("pilot");
-  }
-
-  for (const pipelineType of pipelines) {
-    const existingRel = await db.query.relationshipStatus.findFirst({
-      where: and(
-        eq(relationshipStatus.entityId, entityId),
-        eq(relationshipStatus.pipelineType, pipelineType),
-      ),
-    });
-
-    if (!existingRel) {
-      await db.insert(relationshipStatus).values({
-        entityId,
-        pipelineType,
-        stage: "new",
-        priority:
-          analysis.scores.pilot_fit >= 7 || analysis.scores.investor_fit >= 7
-            ? 1 // high priority
-            : analysis.scores.pilot_fit >= 5 || analysis.scores.investor_fit >= 5
-              ? 2
-              : 3,
-      });
-    }
-  }
+  // Note: Entities are NOT auto-added to pipeline.
+  // User manually selects entities and sends them to pipeline via UI.
 }
 
 // ─── Upsert all analyzed candidates ─────────────────────
@@ -202,6 +162,18 @@ export async function upsertCandidates(
 }
 
 // ─── Helper: get all existing domains for dedup ─────────
+
+export async function getUnenrichedEntities() {
+  return db
+    .select({
+      id: entity.id,
+      name: entity.name,
+      orgNumber: entity.orgNumber,
+      domain: entity.domain,
+    })
+    .from(entity)
+    .where(sql`${entity.enrichedAt} IS NULL`);
+}
 
 export async function getExistingDomains(): Promise<Set<string>> {
   const rows = await db.select({ domain: entity.domain }).from(entity);
